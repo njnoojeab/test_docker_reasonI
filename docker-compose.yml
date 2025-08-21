@@ -1,0 +1,43 @@
+services:
+
+  mysql:
+    platform: linux/amd64
+    image: mysql:8.4.6
+    restart: always
+    container_name: container_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=Aa123456
+      - MYSQL_USER=jeab
+      - MYSQL_PASSWORD=Nj123456
+    volumes:
+      - /Applications/docker/test_docker_reasonI/mysql/log:/var/log/mysql
+      - /Applications/docker/test_docker_reasonI/mysql/data:/var/lib/mysql
+    networks:
+      network_test:
+        ipv4_address: 172.16.0.11
+
+  phpmyadmin:
+    platform: linux/amd64
+    image: phpmyadmin:5.2
+    restart: always
+    container_name: container_phpmyadmin
+    depends_on:
+      - mysql
+    ports:
+      - "82:80"               # แก้เป็นแบบนี้
+    environment:
+      - PMA_HOST=container_mysql
+    networks:
+      network_test:
+        ipv4_address: 172.16.0.12
+
+networks:
+  network_test:
+    name: global_test
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24
+
